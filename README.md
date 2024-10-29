@@ -1,4 +1,5 @@
-Use the following commands to clone the repository
+Use the following commands to clone the repository:
+
 git clone https://github.com/yourusername/Adaptive-Channel-Attention-for-Brain-Tumor-Detection.git
 cd Adaptive-Channel-Attention-for-Brain-Tumor-Detection
 

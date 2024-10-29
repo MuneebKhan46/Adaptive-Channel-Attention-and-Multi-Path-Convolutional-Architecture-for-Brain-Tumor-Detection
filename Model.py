@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[9]:
-
-
 import os
 import time
 import cv2
@@ -24,26 +18,16 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input, Conv2D, MaxPooling2D, BatchNormalization, Dropout, Flatten, Dense, Concatenate, Softmax
 
 
-# In[10]:
-
-
 strategy = tf.distribute.MirroredStrategy()
 print("Number of devices: {}".format(strategy.num_replicas_in_sync))
 
 
-# In[ ]:
+result_file_path = "~/Results.csv"
 
-
-result_file_path = "/Untitled Folder/Results.csv"
-
-dataset_dir = "/Untitled Folder/Dataset Folder/BTD/Training"
-test_dir = "/Untitled Folder/Dataset Folder/BTD/Testing"
+dataset_dir = "~/Dataset Folder/BTD/Training"
+test_dir = "~/Dataset Folder/BTD/Testing"
 
 classes = ["glioma", "meningioma", "pituitary", "notumor"]
-
-
-# In[ ]:
-
 
 def load_data(dataset_dir, classes, width, height):
     images = []
@@ -66,10 +50,6 @@ def load_data(dataset_dir, classes, width, height):
 
     return np.array(images), np.array(image_labels)
 
-
-# In[ ]:
-
-
 def eca_block(input_feature, k_size=3,  activation='swish'):
     channel = input_feature.get_shape().as_list()[-1]
     if channel is None:
@@ -85,10 +65,6 @@ def eca_block(input_feature, k_size=3,  activation='swish'):
     conv1d = layers.Reshape((1, 1, channel))(conv1d)
 
     return layers.Multiply()([input_feature, conv1d])
-
-
-
-# In[ ]:
 
 
 def create_block1(filters, kernel_size, strides=1):
@@ -116,10 +92,6 @@ def create_main_block(input_tensor, filters, kernel_size1, kernel_size2):
     return layers.Concatenate()([path1, path2, path3])
 
 
-
-# In[ ]:
-
-
 def attention_block(x, ratio=8):
     channel = x.get_shape().as_list()[-1]
     avg_pool = layers.GlobalAveragePooling2D()(x)
@@ -134,9 +106,6 @@ def attention_block(x, ratio=8):
     cbam_feature = layers.Activation('sigmoid')(cbam_feature)
 
     return layers.Multiply()([x, cbam_feature])
-
-
-# In[11]:
 
 
 def build_model_with_eca(input_shape=(224, 224, 3), num_classes=4, eca_k_size=3, eca_activation='softmax'):
@@ -192,12 +161,6 @@ def build_model_with_eca(input_shape=(224, 224, 3), num_classes=4, eca_k_size=3,
 
 model = build_model_with_eca()
 
-model.summary()
-
-
-# In[9]:
-
-
 def calculate_map(y_true, y_pred_probs):
     n_classes = y_true.shape[1]
     APs = []
@@ -206,10 +169,6 @@ def calculate_map(y_true, y_pred_probs):
         APs.append(AP)
     mAP = np.mean(APs)
     return mAP
-
-
-# In[10]:
-
 
 def save_metric_details(model_name, test_acc, precision, recall, f1_score, mAP, elapsed_time, memory_used, infer_time, result_file_path):
     if os.path.exists(result_file_path):
@@ -244,9 +203,6 @@ def save_metric_details(model_name, test_acc, precision, recall, f1_score, mAP, 
         df_new_row.to_csv(result_file_path, index=False)
 
 
-# In[11]:
-
-
 train_rgb, train_labels = load_data(dataset_dir, classes, 224, 224)
 test_rgb, test_labels = load_data(test_dir, classes, 224, 224)
 
@@ -256,18 +212,11 @@ np.random.shuffle(shuffle_indexes)
 train_rgb = train_rgb[shuffle_indexes]
 train_labels = train_labels[shuffle_indexes]
 
-
-
 train_rgb = train_rgb.astype('float32') / 255.0
 test_rgb = test_rgb.astype('float32') / 255.0
 
-
-
 print(train_rgb.shape)
 print(test_rgb.shape)
-
-
-# In[12]:
 
 
 X_train, X_val, y_train, y_val = train_test_split(train_rgb, train_labels, test_size=0.2, random_state=42)
@@ -278,15 +227,6 @@ y_val = tf.keras.utils.to_categorical(y_val, num_classes=4)
 test_labels = tf.keras.utils.to_categorical(test_labels, num_classes=4)
 
 
-# In[ ]:
-
-
-
-
-
-# In[18]:
-
-
 start_time = time.time()
 with strategy.scope():
     model = build_model_with_eca()
@@ -294,11 +234,8 @@ with strategy.scope():
     optimizer = tf.keras.optimizers.Adam(learning_rate=0.0001)
     model.compile(optimizer=optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
 
-    model_checkpoint = tf.keras.callbacks.ModelCheckpoint(filepath='/Untitled Folder/Models/Proposed Model2.h5', save_best_only=True,
-                                                          monitor='val_accuracy', mode='max',verbose=1)
-
+    model_checkpoint = tf.keras.callbacks.ModelCheckpoint(filepath='~/Model.h5', save_best_only=True, monitor='val_accuracy', mode='max',verbose=1)
     model_early_stopping = tf.keras.callbacks.EarlyStopping(monitor='val_accuracy',min_delta=0,patience=20,restore_best_weights=True)
-
 
     history= model.fit(X_train, y_train, epochs=500, validation_data=(X_val, y_val), callbacks=[model_checkpoint, model_early_stopping], verbose=1)
 
@@ -307,18 +244,9 @@ elapsed_time = time.time() - start_time
 memory_used = psutil.Process(os.getpid()).memory_info().rss / 1024.0 / 1024.0
 
 
-# In[14]:
-
-
 test_loss, test_accuracy = model.evaluate(test_rgb, test_labels)
 print(f"Test Loss: {test_loss}, Test Accuracy: {test_accuracy}")
 
-
-# In[15]:
-
-
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-import numpy as np
 
 y_true = []
 y_pred = []
@@ -352,38 +280,23 @@ mAP = calculate_map(tf.keras.utils.to_categorical(y_true, 4), y_pred_probs)
 inference_time = end_test / len(test_rgb)
 
 
-model_name = "Proposed Methodology"
+model_name = "Proposed model"
 
 print(model_name, accuracy, precision, recall, f1, mAP, elapsed_time, memory_used, inference_time)
 
 save_metric_details(model_name, accuracy, precision, recall, f1, mAP, elapsed_time, memory_used, inference_time, result_file_path)
 
 
-# In[16]:
-
-
 conf_matrix = confusion_matrix(y_true, y_pred)
-
 updated_classes = ['Glioma', 'Meningioma', 'Pituitary', 'No-Tumor']
-
 plt.figure(figsize=(8, 6))
-
-ax = sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', 
-                 xticklabels=updated_classes, yticklabels=updated_classes, annot_kws={"size": 14})
-
+ax = sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', xticklabels=updated_classes, yticklabels=updated_classes, annot_kws={"size": 14})
 ax.set_xlabel('Predicted Label', fontsize=12, weight='bold')
 ax.set_ylabel('True Label', fontsize=12, weight='bold')
-
 plt.title('Confusion Matrix', fontsize=13, weight='bold')
-
 plt.show()
 
-
-# In[17]:
-
-
 y_true_one_hot = tf.keras.utils.to_categorical(y_true, num_classes=len(classes))
-
 plt.figure(figsize=(10, 8))
 for i, class_name in enumerate(classes):
     fpr, tpr, _ = roc_curve(y_true_one_hot[:, i], y_pred_probs[:, i])
@@ -399,40 +312,5 @@ plt.title('Receiver Operating Characteristic (ROC) - Multi-Class')
 plt.legend(loc="lower right")
 plt.show()
 
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-a =pd.read_csv("/Untitled Folder/Results.csv")
+a =pd.read_csv("~/Results.csv")
 a.head()
-
-
-# In[ ]:
-
-
-
-

@@ -28,9 +28,6 @@ Adaptive-Channel-Attention-for-Brain-Tumor-Detection/
 ├── metrics.py            # Evaluation metrics (accuracy, precision, recall, etc.)
 ├── plots.py              # Visualization tools (confusion matrix, ROC curve)
 ├── requirements.txt      # List of required dependencies
-├── test/                 # Folder for test images (optional)
-│   ├── test_image_1.jpg
-│   └── test_image_2.jpg
 └── README.md             # Project documentation
 ```
 
@@ -58,13 +55,13 @@ pip install -r requirements.txt
 ```
 
 #### **Required Libraries:**
-- **TensorFlow 2.12.0**: Deep learning framework  
-- **NumPy**: Numerical operations  
-- **Pandas**: Data handling  
-- **Matplotlib**: Plotting and visualization  
-- **Seaborn**: Statistical data visualization  
-- **Scikit-learn**: Machine learning tools  
-- **Pillow**: Image handling  
+- **TensorFlow 2.12.0**
+- **NumPy**
+- **Pandas**
+- **Matplotlib**
+- **Seaborn**
+- **Scikit-learn**
+- **Pillow**  
 
 ---
 
@@ -72,7 +69,7 @@ pip install -r requirements.txt
 
 This project uses the **Brain Tumor MRI Dataset** available on Kaggle. Follow these steps to download and organize the dataset:
 
-1. **Download the dataset**: [Brain Tumor MRI Dataset](https://www.kaggle.com/datasets/masoudnickparvar/brain-tumor-mri-dataset)
+1. **Dataset Link**: [Brain Tumor MRI Dataset](https://www.kaggle.com/datasets/masoudnickparvar/brain-tumor-mri-dataset)
 2. **Extract the dataset** into your project directory:
    
    ```
@@ -84,24 +81,20 @@ This project uses the **Brain Tumor MRI Dataset** available on Kaggle. Follow th
    │   └── no_tumor/
    └── Testing/
    ```
-
-3. **(Optional)**: Place any additional test images into the `test/` folder in the project directory.
-
 ---
 
-### **4. Training and Evaluation**
+### **4. Training and Testing**
 
-Once the dataset is set up, you can train, evaluate, and visualize the model with the following commands:
+Use the following commands to train, test, and visualize the model with the following commands:
 
-1. **Train the Model**  
-   Trains the model using the provided dataset.
+1. **Train the Model** 
 
    ```bash
    python train.py
    ```
 
-2. **Evaluate the Model**  
-   Evaluates the trained model on the test data and displays performance metrics.
+2. **Test the Model**  
+   Evaluate the trained model on the test data and display performance metrics.
 
    ```bash
    python metrics.py
@@ -124,22 +117,6 @@ Once the dataset is set up, you can train, evaluate, and visualize the model wit
 
 ---
 
-## **Example Usage**
-
-If you have new test images, place them in the `test/` folder and rerun the evaluation script:
-
-```bash
-python metrics.py
-```
-
----
-
-## **License**
-
-This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for more details.
-
----
-
 ## **Contributing**
 
 Contributions are welcome! Please feel free to submit a pull request or open an issue to suggest improvements.
@@ -149,4 +126,4 @@ Contributions are welcome! Please feel free to submit a pull request or open an 
 ## **Contact**
 
 For any inquiries or issues, please contact:  
-[youremail@example.com](mailto:youremail@example.com)
+[muneebkhan046@gmail.com](mailto:muneebkhan046@gmail.com)

@@ -1,4 +1,4 @@
-#Adaptive Channel Attention for Brain Tumor Detection
+##Adaptive Channel Attention for Brain Tumor Detection !
 
 This project implements a Convolutional Neural Network (CNN) enhanced with Efficient Channel Attention (ECA) and Convolutional Block Attention Module (CBAM). The model is designed to classify brain tumors into categories using MRI images from the Brain Tumor MRI Dataset.
 

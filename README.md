@@ -4,6 +4,7 @@ This project implements a Convolutional Neural Network (CNN) enhanced with Effic
 
 
 **Clone the Repository**
+
 Use the following commands to clone the repository and navigate into the project directory:
 git clone https://github.com/yourusername/Adaptive-Channel-Attention-for-Brain-Tumor-Detection.git
 cd Adaptive-Channel-Attention-for-Brain-Tumor-Detection
